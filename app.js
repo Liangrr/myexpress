@@ -25,6 +25,7 @@ db.on('error', function(){
     console.log('MongoDB Connection Error');
 });
 
+// 设置允许跨域
 app.all('*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   //Access-Control-Allow-Headers ,可根据浏览器的F12查看,把对应的粘贴在这里就行
@@ -34,6 +35,7 @@ app.all('*', function (req, res, next) {
   next();
 });
 
+// 使用body.json模版
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
 
