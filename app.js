@@ -8,7 +8,6 @@ var bodyParser = require('body-parser'); //body-parser 用来解析post请求的
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -17,12 +16,12 @@ mongoose.connect('mongodb://localhost/lrr')     //连接本地数据库blog
 var db = mongoose.connection;
 
 // 连接成功
-db.on('open', function(){
-    console.log('MongoDB Connection Successed');
+db.on('open', function () {
+  console.log('MongoDB Connection Successed');
 });
 // 连接失败
-db.on('error', function(){
-    console.log('MongoDB Connection Error');
+db.on('error', function () {
+  console.log('MongoDB Connection Error');
 });
 
 // 设置允许跨域
@@ -31,13 +30,13 @@ app.all('*', function (req, res, next) {
   //Access-Control-Allow-Headers ,可根据浏览器的F12查看,把对应的粘贴在这里就行
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header('Access-Control-Allow-Methods', '*');
-  res.header('Content-Type', 'application/json;charset=utf-8');
+  res.header('Content-Type', 'application/x-www-form-urlencoded');
   next();
 });
 
 // 使用body.json模版
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -50,15 +49,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
