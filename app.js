@@ -66,4 +66,8 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
+app.listen('8888', 'localhost', function () {
+  console.log('启动成功')
+})
+
 module.exports = app;

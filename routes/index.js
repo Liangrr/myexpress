@@ -35,7 +35,8 @@ router.post('/register', function (req, res) {
     username: req.body.username,
     password: req.body.password,
     age: req.body.age,
-    address: req.body.address
+    address: req.body.address,
+    phone: req.body.phone
   }
   // 查询是否被注册
   User.findOne({ username: postData.username }, function (err, data) {
@@ -53,7 +54,26 @@ router.post('/register', function (req, res) {
           'code': 200,
           'msg': '注册成功'
         })
-        res.redirect('/userList')      // 重定向到所用用户列表
+        // res.redirect('/userList')      // 重定向到所用用户列表
+      })
+    }
+  })
+})
+
+router.post('/forget', function (req, res) {
+  // 获取用户提交的信息
+  var postData = {
+    username: req.body.username,
+    password: req.body.password
+  }
+  // 修改密码
+  User.updateOne({ username: postData.username }, { $set: { 'password': postData.password } }, function (err, data) {
+    if (err) throw err
+    if (data) {
+      res.json({
+        'code': 200,
+        'msg': '修改成功',
+        'data': data
       })
     }
   })

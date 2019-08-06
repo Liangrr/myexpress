@@ -13,6 +13,7 @@ var userSchema = new Schema({
     type: String
   },
   age: Number,
+  phone: Number,
   address: String,
   createAt: {
     type: Date,
