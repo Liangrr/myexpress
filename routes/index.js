@@ -1,11 +1,13 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
 // var app = express()
-var User = require('../models/users')
+const User = require('../models/users')
+const Article = require('../models/article')
+
 
 router.post('/login', function (req, res) {
 
-  var postData = {
+  const postData = {
     username: req.body.username,
     password: req.body.password
   }
@@ -31,7 +33,7 @@ router.post('/login', function (req, res) {
 })
 router.post('/register', function (req, res) {
   // 获取用户提交的信息
-  var postData = {
+  const postData = {
     username: req.body.username,
     password: req.body.password,
     age: req.body.age,
@@ -62,7 +64,7 @@ router.post('/register', function (req, res) {
 
 router.post('/forget', function (req, res) {
   // 获取用户提交的信息
-  var postData = {
+  const postData = {
     username: req.body.username,
     password: req.body.password
   }
@@ -76,6 +78,14 @@ router.post('/forget', function (req, res) {
         'data': data
       })
     }
+  })
+})
+
+//查询所有文章
+router.post('/article', (req, res) => {
+  Article.find({}, function (err, data) {
+    if (err) throw err
+    res.send(data)
   })
 })
 
