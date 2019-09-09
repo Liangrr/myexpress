@@ -17,11 +17,10 @@ router.post('/login', function (req, res) {
   }, function (err, data) {
     if (err) throw err
     if (data) {
-      console.log('lrrdata', data)
       res.json({
         'code': 200,
         'msg': '登录成功',
-        'userName': data.username
+        'username': data.username
       })
     } else {
       res.json({
@@ -83,10 +82,39 @@ router.post('/forget', function (req, res) {
 
 //查询所有文章
 router.post('/article', (req, res) => {
-  Article.find({}, function (err, data) {
-    if (err) throw err
-    res.send(data)
-  })
+  if (req.body.type === 'all') {
+    Article.find({}, function (err, data) {
+      if (err) throw err
+      res.send(data)
+    })
+  }else if (req.body.type === 'write') {
+    // 查询文章是否存在
+    Article.findOne({ title: req.body.title }, function (err, data) {
+      if (err) throw err
+      if (data) {
+        Article.updateOne({ title: req.body.title }, { $set: { 'content': req.body.content } }, function (err, data) {
+          if (err) throw err
+          if (data) {
+            res.json({
+              'code': 200,
+              'msg': '修改成功',
+              'data': data
+            })
+          }
+        })
+      } else {
+        // 保存到数据库
+        Article.create({ title: req.body.title, content: req.body.content, username: req.body.username }, function (err, data) {
+          if (err) throw err
+          res.json({
+            'code': 200,
+            'msg': '发布成功'
+          })
+        })
+      }
+    })
+  }
+  
 })
 
 // 获取所有用户列表

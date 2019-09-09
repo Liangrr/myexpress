@@ -9,7 +9,7 @@ var articleSchema = new Schema({
     type: String,
     unique: true
   },
-  user: {
+  username: {
     type: String
   },
   content: String,
