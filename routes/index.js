@@ -3,12 +3,15 @@ const router = express.Router()
 // var app = express()
 const User = require('../models/users')
 const Article = require('../models/article')
+const Token = require('../token/token.js')
 
 router.post('/login', (req, res) => {
-  const postData = {
+  // 要生成token的主题信息
+  let postData = {
     username: req.body.username,
     password: req.body.password
   }
+  const token = Token.createToken(postData)
   User.findOne({
     username: postData.username,
     password: postData.password
@@ -18,7 +21,8 @@ router.post('/login', (req, res) => {
       res.json({
         'code': 200,
         'msg': '登录成功',
-        'username': data.username
+        'user': { 'username': data.username },
+        'token': token
       })
     } else {
       res.json({
