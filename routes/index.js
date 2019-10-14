@@ -6,12 +6,13 @@ const Article = require('../models/article')
 const Token = require('../token/token.js')
 
 router.post('/login', (req, res) => {
+  console.log('req111',req.header.Authorization)
   // 要生成token的主题信息
   let postData = {
     username: req.body.username,
     password: req.body.password
   }
-  const token = Token.createToken(postData)
+  const token = Token.createToken(postData,3600)
   User.findOne({
     username: postData.username,
     password: postData.password

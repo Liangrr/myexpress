@@ -8,7 +8,7 @@ var bodyParser = require('body-parser'); //body-parser 用来解析post请求的
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
-
+const Token = require('./token/token.js')
 var app = express();
 
 mongoose.connect('mongodb://localhost/lrr')     //连接本地数据库blog 
@@ -28,7 +28,7 @@ db.on('error', function () {
 app.all('*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   //Access-Control-Allow-Headers ,可根据浏览器的F12查看,把对应的粘贴在这里就行
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,token');
   res.header('Access-Control-Allow-Methods', '*');
   res.header('Content-Type', 'application/x-www-form-urlencoded');
   next();
@@ -48,6 +48,27 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', function (req, res, next) {
+  // 获取token
+  const token = req.headers['token']
+  let data = null
+  if (token) {
+    data = Token.checkToken(token) //检查token
+    // data = Token.decodeToken(token)  //解析token
+  }
+  if (req.url === '/login') {
+    next();
+  } else if (!data) {
+    res.send({
+      code: 401,
+      data: {},
+      message: '访问超时，请重新登录！'
+    })
+  } else {
+    next();
+  }
+})
+
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
@@ -66,8 +87,6 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-// app.listen('8000', 'localhost', function () {
-  console.log('启动成功')
-// })
+console.log('启动成功')
 
 module.exports = app;
